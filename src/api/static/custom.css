@@ -1,18 +1,30 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-    --bg-primary: #111827; /* Dark background */
-    --bg-secondary: #1F2937; /* Lighter card/panel background */
-    --border-color: #374151;
-    --text-primary: #F9FAFB; /* Light primary text */
-    --text-secondary: #9CA3AF; /* Grey secondary text */
-    --accent-blue: #3B82F6;
-    --accent-green: #22C55E;
-    --accent-purple: #8B5CF6;
+    /* Palette & Variables from reference */
+    --accent: #7f8df6;
+    --accent-2: #5061dd;
+    --neutral: #23262e;
+    --neutral-2: #181b22;
+    --glass-bg: rgba(33, 36, 45, 0.93);
+    --card-bg: rgba(28, 30, 41, 0.89);
+    --border-color: rgba(80, 97, 221, 0.13);
+    --card-border-color: rgba(127, 141, 246, 0.06);
+    --search-bg: rgba(44, 47, 56, 0.94);
+    --search-border: rgba(80, 97, 221, 0.085);
+    --search-icon: #7f8df6;
+    --text-primary: #e2e8f0;
+    --text-secondary: #A7B0C2;
+    --text-muted: #94a3b8;
+
+    /* Gradients */
+    --gradient-funding: linear-gradient(90deg, #24e47a, #2dcb9c);
+    --gradient-ma: linear-gradient(90deg, #f6d365, #fda085);
+    --gradient-launch: linear-gradient(90deg, #7f8df6, #5061dd);
 }
 
 body {
-    background-color: var(--bg-primary);
+    background-color: var(--neutral-2);
     font-family: 'Inter', sans-serif;
     color: var(--text-primary);
 }
@@ -30,11 +42,10 @@ body {
 .header p {
     color: var(--text-secondary);
     max-width: 600px;
-    margin: 0.5rem auto 0;
 }
 
 .control-panel {
-    background-color: var(--bg-secondary);
+    background-color: var(--glass-bg);
     padding: 1.5rem;
     border-radius: 12px;
     border: 1px solid var(--border-color);
@@ -45,16 +56,16 @@ body {
     margin-bottom: 1.5rem;
 }
 .search-box input {
-    background-color: var(--bg-primary);
-    border: 1px solid var(--border-color);
+    background-color: var(--search-bg);
+    border: 1px solid var(--search-border);
     color: var(--text-primary);
     width: 100%;
     padding: 0.75rem 1rem 0.75rem 2.5rem;
     border-radius: 8px;
 }
 .search-box input:focus {
-    background-color: var(--bg-primary);
-    border-color: var(--accent-blue);
+    background-color: var(--search-bg);
+    border-color: var(--accent);
     box-shadow: none;
     color: var(--text-primary);
 }
@@ -63,38 +74,53 @@ body {
     left: 1rem;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--text-secondary);
+    color: var(--search-icon);
 }
 
 .filter-group h5 {
     font-weight: 600;
     margin-bottom: 1rem;
 }
-.filter-btn {
-    background-color: #374151;
-    border: none;
-    color: var(--text-secondary);
-    width: 100%;
-    text-align: left;
-    margin-bottom: 0.5rem;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    transition: background-color 0.2s;
+
+.filter-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
 }
+
+.filter-btn {
+    background-color: var(--neutral);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
 .filter-btn:hover {
-    background-color: #4B5563;
+    background-color: #3a3f4c;
+    border-color: var(--accent-2);
     color: var(--text-primary);
 }
+
 .filter-btn.active {
-    background-color: var(--accent-blue);
+    background-color: var(--accent-2);
     color: white;
+    border-color: var(--accent);
 }
+
 .filter-btn .dot {
     display: inline-block;
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
-    margin-right: 0.75rem;
 }
 
 
@@ -104,8 +130,8 @@ body {
 }
 
 .signal-item {
-    background-color: var(--bg-secondary);
-    border: 1px solid var(--border-color);
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border-color);
     border-radius: 12px;
     padding: 1.5rem;
     margin-bottom: 1rem;
@@ -152,14 +178,15 @@ body {
     margin-left: 0.75rem;
     color: white;
 }
-.tag-FUNDING { background-color: var(--accent-blue); }
-.tag-ACQUISITION { background-color: var(--accent-green); }
-.tag-LAUNCH { background-color: var(--accent-purple); }
+.tag-FUNDING { background-image: var(--gradient-funding); }
+.tag-ACQUISITION { background-image: var(--gradient-ma); }
+.tag-LAUNCH { background-image: var(--gradient-launch); }
 
 .signal-title {
     font-size: 1.1rem;
     font-weight: 500;
     margin-bottom: 0.25rem;
+    color: var(--text-primary);
 }
 
 .signal-desc {
@@ -173,11 +200,11 @@ body {
 }
 .signal-meta .date {
     font-size: 0.8rem;
-    color: var(--text-secondary);
+    color: var(--text-muted);
 }
 .signal-meta .time {
     font-size: 0.8rem;
-    color: var(--text-secondary);
+    color: var(--text-muted);
 }
 .signal-meta .link-out {
     margin-top: 0.5rem;
@@ -186,5 +213,5 @@ body {
     text-decoration: none;
 }
 .signal-meta .link-out:hover {
-    color: var(--accent-blue);
+    color: var(--accent);
 } 

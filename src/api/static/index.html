@@ -28,10 +28,12 @@
                     </div>
                     <div class="filter-group">
                         <h5>Events by Type</h5>
-                        <button class="filter-btn active" data-filter="All"><span class="dot" style="background-color: #fff;"></span>All</button>
-                        <button class="filter-btn" data-filter="FUNDING"><span class="dot" style="background-color: var(--accent-blue);"></span>Funding</button>
-                        <button class="filter-btn" data-filter="ACQUISITION"><span class="dot" style="background-color: var(--accent-green);"></span>M&A</button>
-                        <button class="filter-btn" data-filter="LAUNCH"><span class="dot" style="background-color: var(--accent-purple);"></span>Launch</button>
+                        <div class="filter-pills">
+                            <button class="filter-btn active" data-filter="All"><span class="dot" style="background: #fff;"></span>All</button>
+                            <button class="filter-btn" data-filter="FUNDING"><span class="dot" style="background-image: var(--gradient-funding);"></span>Funding</button>
+                            <button class="filter-btn" data-filter="ACQUISITION"><span class="dot" style="background-image: var(--gradient-ma);"></span>M&A</button>
+                            <button class="filter-btn" data-filter="LAUNCH"><span class="dot" style="background-image: var(--gradient-launch);"></span>Launch</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -82,7 +84,7 @@
 
                 filteredSignals.forEach(signal => {
                     const company = signal.context?.companies?.[0]?.text || 'Unknown Company';
-                    const signalTitle = signal.sentence.length > 80 ? signal.sentence.substring(0, 80) + '...' : signal.sentence;
+                    const signalTitle = signal.sentence;
                     
                     const el = document.createElement('li');
                     el.className = 'signal-item';
@@ -107,7 +109,7 @@
 
             filterButtons.forEach(button => {
                 button.addEventListener('click', () => {
-                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    document.querySelector('.filter-btn.active').classList.remove('active');
                     button.classList.add('active');
                     currentFilter = button.dataset.filter;
                     renderSignals();
