@@ -1,47 +1,55 @@
-# Private Company Signal Extractor
+# Market Signal Intelligence
 
-![Python Version](https://img.shields.io/badge/python-3.11-blue.svg)
-![Framework](https://img.shields.io/badge/framework-Flask-black.svg)
-![Database](https://img.shields.io/badge/database-MongoDB-green.svg)
+![Python Version](https://img.shields.io/badge/python-3.11-blue.svg?style=for-the-badge)
+![Framework](https://img.shields.io/badge/framework-Flask-black?style=for-the-badge)
+![Database](https://img.shields.io/badge/database-MongoDB-green?style=for-the-badge)
 
-A sophisticated data pipeline that automatically scrapes news articles, identifies key business events using a custom-trained NER model, and presents the findings in a clean web interface. This project transforms unstructured text into structured, actionable market intelligence.
+A sophisticated, end-to-end data pipeline that automatically scrapes financial news, identifies key market events (like funding and M&A) using a custom-trained NER model, and presents the findings in a polished, real-time web interface.
+
+This project transforms unstructured web content into structured, actionable market intelligence.
+
+_Screenshot of the new UI will be added here._
 
 ## Features
 
-- **Targeted Web Scraping**: Scrapes articles specifically from the "Venture" section of news sites like TechCrunch to gather relevant data.
+- **Targeted Web Scraping**: Automatically scrapes articles from high-value sources like the TechCrunch "Venture" section.
 - **Custom NER Model**: Utilizes a fine-tuned BERT model from HuggingFace Transformers to accurately identify custom entities like `COMPANY`, `FINANCIAL`, and `PERSON`.
-- **Rule-Based Signal Extraction**: Implements a hybrid NER + regex system to robustly identify `FUNDING` and `ACQUISITION` signals.
-- **Interactive Web Interface**: A clean, modern UI built with Flask and Bootstrap that displays extracted signals in a searchable and sortable table.
+- **Hybrid Signal Extraction**: A robust hybrid system (NER + regex) to pinpoint `FUNDING` and `ACQUISITION` signals with high precision.
+- **Modern Web Interface**: A sleek, responsive dashboard built with Flask that displays extracted signals in real-time.
 - **End-to-End Pipeline**: A complete, automated workflow from raw data collection to final presentation.
-- **Database Storage**: Uses MongoDB to store raw articles, processed text, and extracted signals for persistence and scalability.
+- **Scalable Database**: Uses MongoDB to store raw articles, processed text, and extracted signals for persistence and scalability.
 
 ## Architecture
 
-The project follows a standard data processing pipeline, moving from raw data collection to structured analysis and presentation.
+The project follows a modular data pipeline, moving from raw data collection through analysis to final presentation in the web interface.
 
 ```mermaid
 graph TD;
-    subgraph "Core Pipeline";
+    subgraph "Data Ingestion & Processing"
         direction LR
-        A["1. Scrape Articles"] --> B["2. Preprocess Text"];
+        A["1. Scrape Articles"] --> B["2. Preprocess Text & Store"];
+    end
+    
+    subgraph "Signal Extraction"
+        direction LR
         B --> C["3. NER Model Predicts Entities"];
         C --> D["4. Extract Signals"];
-        D --> E["Store Signals in DB"];
     end
 
-    subgraph "User Interface";
+    subgraph "Presentation Layer"
         direction LR
+        D --> E["Store Signals in DB"];
         E --> F["API Endpoint"];
         F --> G["Web Dashboard"];
     end
 
-    style A fill:#d4edda,stroke:#c3e6cb
-    style B fill:#d4edda,stroke:#c3e6cb
-    style C fill:#d4edda,stroke:#c3e6cb
-    style D fill:#d4edda,stroke:#c3e6cb
-    style E fill:#d4edda,stroke:#c3e6cb
-    style F fill:#f8d7da,stroke:#f5c6cb
-    style G fill:#f8d7da,stroke:#f5c6cb
+    style A fill:#141414,stroke:#6C55F5
+    style B fill:#141414,stroke:#6C55F5
+    style C fill:#141414,stroke:#6C55F5
+    style D fill:#141414,stroke:#6C55F5
+    style E fill:#141414,stroke:#6C55F5
+    style F fill:#141414,stroke:#A89DF8
+    style G fill:#141414,stroke:#A89DF8
 ```
 
 ## Technology Stack
@@ -50,8 +58,8 @@ graph TD;
 - **Machine Learning**: PyTorch, HuggingFace Transformers, spaCy
 - **Database**: MongoDB (via pymongo)
 - **Web Scraping**: Requests, BeautifulSoup4
-- **Frontend**: HTML, Bootstrap 5, Simple-DataTables
-- **Tooling**: Jupyter, Git
+- **Frontend**: HTML, CSS, JavaScript
+- **Tooling**: Git, Virtualenv
 
 ## Setup and Installation
 
@@ -67,7 +75,7 @@ cd private-company-signal-extractor
 ```bash
 # For Windows
 python -m venv venv
-.\venv\Scripts\activate
+.\\venv\\Scripts\\activate
 
 # For macOS/Linux
 python3 -m venv venv
@@ -82,27 +90,15 @@ pip install -r requirements.txt
 
 ## Usage
 
-The pipeline is designed to be run in sequence.
+The entire pipeline can be run with a single script.
 
-**1. Scrape the latest articles:**
-This script clears the database and fetches new articles from the TechCrunch "Venture" section.
-```bash
-python src/scraper/techcrunch_scraper.py
-```
-
-**2. Preprocess the articles:**
-This script cleans the raw HTML, processes the text with spaCy, and stores the results.
-```bash
-python src/preprocessing/text_processor.py
-```
-
-**3. Extract signals from the processed text:**
-This script uses the trained NER model to find signals and stores them in the `signals` collection.
+**1. Run the Full Pipeline:**
+This master script handles everything: clearing the database, scraping new articles, processing them, and extracting signals.
 ```bash
 python process_signals.py
 ```
 
-**4. Launch the Web Interface:**
+**2. Launch the Web Interface:**
 Start the Flask server to view the results in your browser.
 ```bash
 python -m src.api.app
