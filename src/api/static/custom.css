@@ -1,0 +1,111 @@
+/* General Body & Font Styling */
+body {
+    background-color: #f0f2f5; /* Lighter grey for a modern feel */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+.container-fluid {
+    padding: 2rem;
+}
+
+/* Page Header */
+.header {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #1a253c;
+}
+
+/* Signal Card Styling */
+.signal-card {
+    background-color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.signal-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* Card Header (Signal Type) */
+.card-header-custom {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #1a253c;
+}
+
+.card-header-custom .icon {
+    margin-right: 0.75rem;
+    font-size: 1.5rem;
+}
+
+/* Card Content (Sentence) */
+.card-sentence {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    color: #555;
+}
+
+/* Entities Section */
+.entities-container {
+    margin-bottom: 1rem;
+}
+
+.entity-tag {
+    display: inline-block;
+    padding: 0.3rem 0.7rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* Specific colors for entity types */
+.entity-tag-COMPANY {
+    background-color: #e0f2fe; /* Light Blue */
+    color: #0c54a8;
+}
+.entity-tag-PERSON {
+    background-color: #dcfce7; /* Light Green */
+    color: #15803d;
+}
+.entity-tag-FINANCIAL {
+    background-color: #fefce8; /* Light Yellow */
+    color: #a16207;
+}
+.entity-tag-DATE {
+    background-color: #f3e8ff; /* Light Purple */
+    color: #6b21a8;
+}
+.entity-tag-EVENT {
+    background-color: #fee2e2; /* Light Red */
+    color: #991b1b;
+}
+
+/* Card Footer (Source Link) */
+.card-footer-custom {
+    text-align: right;
+    font-size: 0.9rem;
+}
+
+.card-footer-custom a {
+    text-decoration: none;
+    color: #0d6efd;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.card-footer-custom a:hover {
+    color: #0a58ca;
+} 
