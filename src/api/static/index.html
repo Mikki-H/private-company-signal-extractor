@@ -13,67 +13,123 @@
 </head>
 <body>
     <div class="container-fluid">
-        <h1 class="header">Market Intelligence Feed</h1>
-        <div id="signals-container" class="row">
-            <!-- Signal cards will be injected here by JavaScript -->
+        <header class="header text-center">
+            <h1>Private Company Signal Extractor</h1>
+            <p>Real-time NLP pipeline surfacing key private market events (funding, M&A, launches) from unstructured web content. Actionable business signals, at your fingertips.</p>
+        </header>
+
+        <div class="row">
+            <!-- Control Panel -->
+            <div class="col-lg-3">
+                <div class="control-panel">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="search-input" class="form-control" placeholder="Search by company, event...">
+                    </div>
+                    <div class="filter-group">
+                        <h5>Events by Type</h5>
+                        <button class="filter-btn active" data-filter="All"><span class="dot" style="background-color: #fff;"></span>All</button>
+                        <button class="filter-btn" data-filter="FUNDING"><span class="dot" style="background-color: var(--accent-blue);"></span>Funding</button>
+                        <button class="filter-btn" data-filter="ACQUISITION"><span class="dot" style="background-color: var(--accent-green);"></span>M&A</button>
+                        <button class="filter-btn" data-filter="LAUNCH"><span class="dot" style="background-color: var(--accent-purple);"></span>Launch</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Signal Feed -->
+            <div class="col-lg-9">
+                <ul id="signals-feed" class="signal-feed">
+                    <!-- Signal items will be injected here -->
+                </ul>
+            </div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const container = document.getElementById('signals-container');
+            const feedContainer = document.getElementById('signals-feed');
+            const searchInput = document.getElementById('search-input');
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            
+            let allSignals = [];
+            let currentFilter = 'All';
 
-            // Map signal types to icons and colors
-            const signalMeta = {
-                'FUNDING': { icon: 'fa-hand-holding-dollar', color: '#22c55e' },
-                'ACQUISITION': { icon: 'fa-handshake', color: '#3b82f6' },
-                'DEFAULT': { icon: 'fa-bell', color: '#6b7280' }
+            const logoColors = ['#e67e22', '#2ecc71', '#3498db', '#9b59b6', '#e74c3c', '#1abc9c', '#f1c40f'];
+
+            const getLogoPlaceholder = (companyName) => {
+                const firstChar = companyName ? companyName.charAt(0).toUpperCase() : '?';
+                const colorIndex = (firstChar.charCodeAt(0) % logoColors.length);
+                const color = logoColors[colorIndex];
+                return `<div class="logo-placeholder" style="background-color: ${color};">${firstChar}</div>`;
             };
 
+            const renderSignals = () => {
+                feedContainer.innerHTML = '';
+                const searchTerm = searchInput.value.toLowerCase();
+
+                const filteredSignals = allSignals.filter(signal => {
+                    const typeMatch = currentFilter === 'All' || signal.type === currentFilter;
+                    const companyName = signal.context?.companies?.[0]?.text || '';
+                    const searchMatch = signal.sentence.toLowerCase().includes(searchTerm) || 
+                                      companyName.toLowerCase().includes(searchTerm);
+                    return typeMatch && searchMatch;
+                });
+
+                if (filteredSignals.length === 0) {
+                    feedContainer.innerHTML = '<p class="text-center text-secondary mt-5">No signals match your criteria.</p>';
+                    return;
+                }
+
+                filteredSignals.forEach(signal => {
+                    const company = signal.context?.companies?.[0]?.text || 'Unknown Company';
+                    const signalTitle = signal.sentence.length > 80 ? signal.sentence.substring(0, 80) + '...' : signal.sentence;
+                    
+                    const el = document.createElement('li');
+                    el.className = 'signal-item';
+                    el.innerHTML = `
+                        ${getLogoPlaceholder(company)}
+                        <div class="signal-content">
+                            <div class="signal-header">
+                                <h5>${company}</h5>
+                                <span class="signal-tag tag-${signal.type}">${signal.type}</span>
+                            </div>
+                            <p class="signal-title">${signalTitle}</p>
+                        </div>
+                        <div class="signal-meta">
+                            <a href="${signal.article_url}" target="_blank" class="link-out">
+                                <i class="fas fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </div>
+                    `;
+                    feedContainer.appendChild(el);
+                });
+            };
+
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    currentFilter = button.dataset.filter;
+                    renderSignals();
+                });
+            });
+
+            searchInput.addEventListener('input', renderSignals);
+
+            // Initial Fetch
             fetch('/api/signals')
                 .then(response => response.json())
                 .then(data => {
                     if (!data || data.length === 0) {
-                        container.innerHTML = '<p class="text-center">No signals found in the database.</p>';
+                        feedContainer.innerHTML = '<p class="text-center text-secondary mt-5">No signals found in the database.</p>';
                         return;
                     }
-
-                    data.forEach(signal => {
-                        const meta = signalMeta[signal.type] || signalMeta['DEFAULT'];
-
-                        // Create the main card element
-                        const card = document.createElement('div');
-                        card.className = 'col-lg-4 col-md-6 col-sm-12';
-                        
-                        let entitiesHTML = '';
-                        if (signal.context && signal.context.companies) {
-                             signal.context.companies.forEach(entity => {
-                                const label = entity.label.replace(' (Fallback)', '');
-                                entitiesHTML += `<span class="entity-tag entity-tag-${label}">${entity.text}</span>`;
-                            });
-                        }
-
-                        card.innerHTML = `
-                            <div class="signal-card">
-                                <div class="card-header-custom" style="color: ${meta.color};">
-                                    <i class="fas ${meta.icon} icon"></i>
-                                    <span>${signal.type}</span>
-                                </div>
-                                <p class="card-sentence">${signal.sentence}</p>
-                                <div class="entities-container">
-                                    ${entitiesHTML}
-                                </div>
-                                <div class="card-footer-custom">
-                                    <a href="${signal.article_url}" target="_blank">Read Article &rarr;</a>
-                                </div>
-                            </div>
-                        `;
-                        container.appendChild(card);
-                    });
+                    allSignals = data;
+                    renderSignals();
                 })
                 .catch(error => {
                     console.error('Error fetching signals:', error);
-                    container.innerHTML = '<p class="text-center text-danger">Could not load signals. Please check the console for errors.</p>';
+                    feedContainer.innerHTML = '<p class="text-center text-danger mt-5">Could not load signals.</p>';
                 });
         });
     </script>
