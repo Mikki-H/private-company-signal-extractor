@@ -8,7 +8,7 @@ A sophisticated, end-to-end data pipeline that automatically scrapes financial n
 
 This project transforms unstructured web content into structured, actionable market intelligence.
 
-_Screenshot of the new UI will be added here._
+![Market Signal Intelligence UI](screenshot.png)
 
 ## Features
 
